@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat with LLaMA-3</title>
+    <style>
+        /* General styles */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f5f5; /* Light grey background */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        /* Chat container styles */
+        .chat-container {
+            width: 100%;
+            max-width: 600px;
+            background-color: #ffffff; /* White background */
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Chat header styles */
+        .chat-header {
+            background-color: #007bff; /* Blue header background */
+            color: #ffffff; /* White text color */
+            padding: 15px;
+            text-align: center;
+            border-top-left-radius: 8px;
+            border-top-right-radius: 8px;
+            font-size: 1.5rem;
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+
+        /* Chat body styles */
+        .chat-body {
+            flex: 1;
+            overflow-y: auto;
+            padding: 15px;
+            background-color: #f9f9f9; /* Light grey chat background */
+        }
+
+        /* Message styles */
+        .message {
+            margin-bottom: 15px;
+            padding: 12px;
+            border-radius: 12px;
+            max-width: 80%;
+            position: relative;
+            overflow-wrap: break-word; /* Wrap long words */
+        }
+
+        .user-message {
+            background-color: #e9ecef; /* Light grey user message background */
+            color: #495057; /* Dark grey user message text */
+            align-self: flex-start;
+        }
+
+        .llama-message {
+            background-color: #007bff; /* Blue llama message background */
+            color: #ffffff; /* White llama message text */
+            align-self: flex-end;
+        }
+
+        /* Timeline styles */
+        .timeline {
+            position: absolute;
+            font-size: 12px;
+            color: #888;
+            bottom: 8px;
+            right: 12px;
+        }
+
+        /* Input area styles */
+        .input-area {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            border-top: 1px solid #ddd; /* Light grey border */
+            background-color: #f5f5f5; /* Light grey background */
+        }
+
+        .input-field {
+            flex: 1;
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ddd; /* Light grey border */
+            border-radius: 5px;
+            outline: none;
+        }
+
+        .send-button {
+            padding: 10px 20px;
+            margin-left: 10px;
+            font-size: 16px;
+            background-color: #007bff; /* Blue button background */
+            color: #ffffff; /* White button text */
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            outline: none;
+            transition: background-color 0.3s ease; /* Smooth transition */
+        }
+
+        .send-button:hover {
+            background-color: #0056b3; /* Darker blue on hover */
+        }
+    </style>
+</head>
+<body>
+    <div class="chat-container">
+        <div class="chat-header">
+            Chat with LLaMA-3
+        </div>
+        <div class="chat-body" id="chat-box"></div>
+        <div class="input-area">
+            <input type="text" class="input-field" id="user-input" placeholder="Type your message here...">
+            <button class="send-button" id="send-button">Send</button>
+        </div>
+    </div>
+
+    <!-- Include marked.js for Markdown parsing -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script>
+        const chatBox = document.getElementById('chat-box');
+        const userInput = document.getElementById('user-input');
+        const sendButton = document.getElementById('send-button');
+
+        function getCurrentDateTime() {
+            const now = new Date();
+            const year = now.getFullYear();
+            const month = (now.getMonth() + 1).toString().padStart(2, '0');
+            const day = now.getDate().toString().padStart(2, '0');
+            const hours = now.getHours().toString().padStart(2, '0');
+            const minutes = now.getMinutes().toString().padStart(2, '0');
+            const seconds = now.getSeconds().toString().padStart(2, '0');
+            return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+        }
+
+        function addMessageToChatBox(message, role, isMarkdown = false) {
+            const messageElement = document.createElement('div');
+            messageElement.className = `message ${role.toLowerCase()}-message`;
+            messageElement.innerHTML = isMarkdown ? marked.parse(message) : `${role}: ${message}`;
+            
+            const timeline = document.createElement('span');
+            timeline.className = 'timeline';
+            timeline.textContent = getCurrentDateTime();
+            messageElement.appendChild(timeline);
+            
+            chatBox.appendChild(messageElement);
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
+
+        function addBlankLine() {
+            const blankLineElement = document.createElement('div');
+            blankLineElement.className = 'message';
+            blankLineElement.innerHTML = '&nbsp;';
+            chatBox.appendChild(blankLineElement);
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
+
+        sendButton.addEventListener('click', () => {
+            const message = userInput.value;
+            if (message) {
+                addMessageToChatBox(message, 'User');
+                addBlankLine();
+                userInput.value = '';
+
+                fetch('/chat', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ message: message })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.response) {
+                        addMessageToChatBox(data.response, 'LLaMA-3', true);
+                        addBlankLine();
+                    } else {
+                        addMessageToChatBox('Error: ' + (data.error || 'Unknown error'), 'System');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    addMessageToChatBox('Error: ' + error, 'System');
+                });
+            }
+        });
+
+        userInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                sendButton.click();
+            }
+        });
+    </script>
+</body>
+</html>

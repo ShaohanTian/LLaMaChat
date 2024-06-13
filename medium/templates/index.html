@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat with LLaMA-3</title>
+    <style>
+        /* General styles */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f0f0; /* Slightly lighter grey background */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        /* Chat container styles */
+        .chat-container {
+            width: 100%;
+            max-width: 800px;
+            margin: 20px;
+            background-color: #ffffff;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 12px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* Chat header styles */
+        .chat-header {
+            background-color: #007bff;
+            color: #ffffff;
+            padding: 15px;
+            text-align: center;
+            border-top-left-radius: 12px;
+            border-top-right-radius: 12px;
+            font-size: 1.5rem;
+            font-weight: bold;
+            letter-spacing: 1px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        /* Chat body styles */
+        .chat-body {
+            overflow-y: auto;
+            max-height: 60vh; /* Limit chat height to maintain visible input area */
+            padding: 15px;
+            background-color: #f0f0f0;
+            border-bottom-left-radius: 12px;
+            border-bottom-right-radius: 12px;
+        }
+
+        /* Message styles */
+        .message {
+            margin-bottom: 15px;
+            padding: 12px 15px;
+            border-radius: 12px;
+            max-width: 80%;
+            position: relative;
+            overflow-wrap: break-word;
+        }
+
+        .user-message {
+            background-color: #e9ecef;
+            color: #495057;
+            align-self: flex-start;
+        }
+
+        .llama-message {
+            background-color: #007bff;
+            color: #ffffff;
+            align-self: flex-end;
+        }
+
+        /* Timeline styles */
+        .timeline {
+            position: absolute;
+            font-size: 12px;
+            color: #888;
+            bottom: 8px;
+            right: 12px;
+        }
+
+        /* Input area styles */
+        .input-area {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            border-top: 1px solid #ddd;
+            background-color: #ffffff;
+            border-bottom-left-radius: 12px;
+            border-bottom-right-radius: 12px;
+        }
+
+        .input-field {
+            flex: 1;
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            outline: none;
+        }
+
+        .send-button {
+            padding: 10px 20px;
+            margin-left: 10px;
+            font-size: 16px;
+            background-color: #007bff;
+            color: #ffffff;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            outline: none;
+            transition: background-color 0.3s ease;
+        }
+
+        .send-button:hover {
+            background-color: #0056b3;
+        }
+
+        /* Logout button styles */
+        .logout-button {
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #dc3545;
+            color: #ffffff;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            outline: none;
+            transition: background-color 0.3s ease;
+        }
+
+        .logout-button:hover {
+            background-color: #c82333;
+        }
+
+        /* Scrollbar styles */
+        .chat-body::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .chat-body::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+
+        .chat-body::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 4px;
+        }
+
+        .chat-body::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+    </style>
+</head>
+<body>
+    <div class="chat-container">
+        <div class="chat-header">
+            Chat with LLaMA-3
+            {% if username %}
+            <span class="username-display">{{ username }}</span>
+            <button class="logout-button" id="logout-button">Logout</button>
+            {% endif %}
+        </div>
+        <div class="chat-body" id="chat-box">
+            <!-- Dummy content for demonstration -->
+            <div class="message user-message">User: Hello there!</div>
+            <div class="message llama-message">LLaMA-3: Hi! How can I assist you today?</div>
+            <div class="message user-message">User: I need help with something.</div>
+            <div class="message llama-message">LLaMA-3: Sure, go ahead and ask your question.</div>
+            <div class="message user-message">User: ...</div>
+            <div class="message llama-message">LLaMA-3: Here's the answer!</div>
+        </div>
+        <div class="input-area">
+            <input type="text" class="input-field" id="user-input" placeholder="Type your message here...">
+            <button class="send-button" id="send-button">Send</button>
+        </div>
+    </div>
+
+    <!-- Include marked.js for Markdown parsing -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script>
+        // Check if marked is loaded before using it
+        if (window.marked) {
+            initializeChat();
+        } else {
+            document.querySelector('script[src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"]').addEventListener('load', initializeChat);
+        }
+
+        function initializeChat() {
+            const chatBox = document.getElementById('chat-box');
+            const userInput = document.getElementById('user-input');
+            const sendButton = document.getElementById('send-button');
+            const logoutButton = document.getElementById('logout-button');
+
+            function getCurrentDateTime() {
+                const now = new Date();
+                const year = now.getFullYear();
+                const month = (now.getMonth() + 1).toString().padStart(2, '0');
+                const day = now.getDate().toString().padStart(2, '0');
+                const hours = now.getHours().toString().padStart(2, '0');
+                const minutes = now.getMinutes().toString().padStart(2, '0');
+                const seconds = now.getSeconds().toString().padStart(2, '0');
+                return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+            }
+
+            function addMessageToChatBox(message, role, isMarkdown = false) {
+                const messageElement = document.createElement('div');
+                messageElement.className = `message ${role.toLowerCase()}-message`;
+                messageElement.innerHTML = isMarkdown ? window.marked.parse(message) : `${role}: ${message}`;
+                
+                const timeline = document.createElement('span');
+                timeline.className = 'timeline';
+                timeline.textContent = getCurrentDateTime();
+                messageElement.appendChild(timeline);
+                
+                chatBox.appendChild(messageElement);
+                chatBox.scrollTop = chatBox.scrollHeight;
+            }
+
+            function addBlankLine() {
+                const blankLineElement = document.createElement('div');
+                blankLineElement.className = 'message';
+                blankLineElement.innerHTML = '&nbsp;';
+                chatBox.appendChild(blankLineElement);
+                chatBox.scrollTop = chatBox.scrollHeight;
+            }
+
+            sendButton.addEventListener('click', () => {
+                const message = userInput.value;
+                if (message) {
+                    addMessageToChatBox(message, 'User');
+                    addBlankLine();
+                    userInput.value = '';
+
+                    fetch('/chat', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ message: message })
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.response) {
+                            addMessageToChatBox(data.response, 'LLaMA-3', true);
+                            addBlankLine();
+                        } else {
+                            addMessageToChatBox('Error: ' + (data.error || 'Unknown error'), 'System');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        addMessageToChatBox('Error: ' + error, 'System');
+                    });
+                }
+            });
+
+
+            userInput.addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') {
+        sendButton.click();
+    }
+});
+
+logoutButton.addEventListener('click', () => {
+    fetch('/logout', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            window.location.href = '/';
+        } else {
+            console.error('Logout failed:', data.message);
+            alert('Logout failed: ' + data.message);
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Error: ' + error);
+    });
+});
+}
+</script>
+</body>
+</html>
