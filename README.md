@@ -30,4 +30,9 @@ LLaMaChat isn't just a chatbot; it's a leap forward in AI-driven communication. 
 
 ### Get Started 🚀
 
+```bash
+net start mysql
+python .\llama3_chat.py
+```
+
 Explore LLaMaChat today and immerse yourself in the possibilities of AI-powered conversations. Welcome to the future of chat! 🌐
