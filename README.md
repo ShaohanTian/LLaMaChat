@@ -2,9 +2,7 @@
 
 LLaMaChat is your gateway to next-generation chat experiences powered by the advanced LLaMa3-instruct-8B language model. Built on Python's Flask framework, it brings cutting-edge AI directly to your web browser for intelligent and engaging conversations.
 
-<div style="text-align:center;">
-<img src="https://cdn.jsdelivr.net/gh/ShaohanTian/MyBlog/img/202406132137385.png" alt="LLaMaChat" width="520" height="450">
-</div>
+<div style="text-align:center;"><img src="https://cdn.jsdelivr.net/gh/ShaohanTian/MyBlog/img/202406132137385.png" alt="LLaMaChat" width="520" height="450"></div>
 
 ### Key Features ✨
 
