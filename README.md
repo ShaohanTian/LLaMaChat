@@ -7,7 +7,7 @@ LLaMaChat is your gateway to next-generation chat experiences powered by the adv
 
 <img src="https://cdn.jsdelivr.net/gh/ShaohanTian/MyBlog/img/202406132139683.png" alt="LLaMaChat" width="400" height="400">
 
-<img src="https://cdn.jsdelivr.net/gh/ShaohanTian/MyBlog/img/202406132137385.png" alt="LLaMaChat" width="400" height="500">
+<img src="https://cdn.jsdelivr.net/gh/ShaohanTian/MyBlog/img/202406132137385.png" alt="LLaMaChat" width="600" height="500">
 </div>
 
 ### Key Features ✨
