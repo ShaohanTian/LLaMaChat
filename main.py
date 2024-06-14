@@ -228,7 +228,7 @@ def save_to_database(username, role, message):
         with connection.cursor() as cursor:
             sql = "INSERT INTO chat_history (user_id, role, message) VALUES (%s, %s, %s)"
             cursor.execute(sql, (user_id, role, message))
-        with connection.cursor() as cursor:
+
             sql = "INSERT INTO chat_archive (user_id, role, message) VALUES (%s, %s, %s)"
             cursor.execute(sql, (user_id, role, message))
         connection.commit()
@@ -259,19 +259,6 @@ def login():
 
     return render_template('login.html')
 
-# @app.route('/register', methods=['GET', 'POST'])
-# def register():
-#     if request.method == 'POST':
-#         username = request.form['username']
-#         password = request.form['password']
-
-#         if username_exists(username):
-#             return jsonify({'success': False, 'message': 'Username already exists. Please choose a different username.'}), 400
-
-#         save_user_to_database(username, password)
-#         return redirect(url_for('login'))
-
-#     return render_template('register.html')
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():

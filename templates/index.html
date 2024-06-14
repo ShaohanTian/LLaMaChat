@@ -18,7 +18,7 @@
             font-size: 18px; /* Increased font size for all text */
             color: #333; /* Main text color */
         }
-    
+
         /* Chat container styles */
         .chat-container {
             width: 100%;
@@ -30,7 +30,7 @@
             overflow: hidden;
             position: relative;
         }
-    
+
         /* Chat header styles */
         .chat-header {
             background-color: #7ab2b2; /* Light teal */
@@ -46,7 +46,7 @@
             justify-content: space-between;
             align-items: center;
         }
-    
+
         /* Chat body styles */
         .chat-body {
             overflow-y: auto;
@@ -58,7 +58,7 @@
             font-size: 16px;
             line-height: 1.6;
         }
-    
+
         /* Message styles */
         .message {
             margin-bottom: 15px;
@@ -68,19 +68,19 @@
             position: relative;
             overflow-wrap: break-word;
         }
-    
+
         .user-message {
             background-color: #d8efd3; /* Light green */
             color: #333; /* Darker text color */
             align-self: flex-start;
         }
-    
+
         .llama-message {
             background-color: #4d869c; /* Teal */
             color: #ffffff;
             align-self: flex-end;
         }
-    
+
         /* Timeline styles */
         .timeline {
             position: absolute;
@@ -89,7 +89,7 @@
             bottom: 8px;
             right: 12px;
         }
-    
+
         /* Input area styles */
         .input-area {
             display: flex;
@@ -100,7 +100,7 @@
             border-bottom-left-radius: 12px;
             border-bottom-right-radius: 12px;
         }
-    
+
         .input-field {
             flex: 1;
             padding: 10px;
@@ -109,7 +109,7 @@
             border-radius: 6px;
             outline: none;
         }
-    
+
         .send-button {
             padding: 10px 20px;
             font-size: 16px;
@@ -121,11 +121,11 @@
             transition: background-color 0.3s ease;
             outline: none;
         }
-    
+
         .send-button:hover {
             background-color: #4d869c; /* Darker teal */
         }
-    
+
         .logout-button,
         .copy-button,
         .clear-button {
@@ -136,62 +136,62 @@
             cursor: pointer;
             outline: none;
         }
-    
+
         .logout-button {
             background-color: #dc3545; /* Red */
             color: #ffffff;
             margin-left: 10px;
             transition: background-color 0.3s ease;
         }
-    
+
         .logout-button:hover {
             background-color: #c82333; /* Darker Red */
         }
-    
+
         .copy-button {
             background-color: #17a2b8; /* Cyan */
             color: #ffffff;
             margin-left: 10px;
             transition: background-color 0.3s ease;
         }
-    
+
         .copy-button:hover {
             background-color: #138496; /* Darker Cyan */
         }
-    
+
         .clear-button {
             background-color: #ffc107; /* Yellow */
             color: #ffffff;
             margin-left: 10px;
             transition: background-color 0.3s ease;
         }
-    
+
         .clear-button:hover {
             background-color: #e0a800; /* Darker Yellow */
         }
-    
+
         /* Scrollbar styles */
         .chat-body::-webkit-scrollbar {
             width: 8px;
         }
-    
+
         .chat-body::-webkit-scrollbar-track {
             background: #f1f1f1;
         }
-    
+
         .chat-body::-webkit-scrollbar-thumb {
             background: #888;
             border-radius: 4px;
         }
-    
+
         .chat-body::-webkit-scrollbar-thumb:hover {
             background: #555;
         }
     </style>
-    
 
-    
-    
+
+
+
 
 </head>
 <body>
@@ -252,12 +252,12 @@
                 const messageElement = document.createElement('div');
                 messageElement.className = `message ${role.toLowerCase()}-message`;
                 messageElement.innerHTML = isMarkdown ? window.marked.parse(message) : `${role}: ${message}`;
-                
+
                 const timeline = document.createElement('span');
                 timeline.className = 'timeline';
                 timeline.textContent = getCurrentDateTime();
                 messageElement.appendChild(timeline);
-                
+
                 chatBox.appendChild(messageElement);
                 chatBox.scrollTop = chatBox.scrollHeight;
             }
