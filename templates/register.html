@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>User Registration</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -14,70 +15,145 @@
             justify-content: center;
             align-items: center;
             height: 100vh;
+            font-size: 18px; /* Increased font size for all text */
         }
 
         .registration-container {
-            background-color: #ffffff;
-            padding: 30px;
-            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
-            border-radius: 8px;
-            width: 300px;
+            background-color: rgba(255, 255, 255, 0.9);
+            padding: 40px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            width: 450px;
             text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px; /* Spacing between elements */
+            transition: transform 0.3s ease;
+        }
+
+        .registration-container:hover {
+            transform: scale(1.02);
         }
 
         .registration-container h2 {
-            margin-bottom: 20px;
+            margin-bottom: 30px;
             color: #333;
-            font-size: 24px;
+            font-size: 32px; /* Increased font size for heading */
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
 
         .registration-container label {
             display: block;
-            margin-bottom: 8px;
+            margin-bottom: 10px;
             color: #555;
             font-size: 16px;
             font-weight: bold;
             text-align: left;
+            width: 100%;
         }
 
         .registration-container input[type="text"],
         .registration-container input[type="password"] {
             width: 100%;
-            padding: 12px;
+            padding: 16px;
             margin-bottom: 20px;
-            border: 1px solid #ddd;
+            border: 1px solid #ccc;
             border-radius: 5px;
-            font-size: 16px;
+            font-size: 18px;
             box-sizing: border-box;
+            transition: border-color 0.3s ease;
+        }
+
+        .registration-container input[type="text"]:focus,
+        .registration-container input[type="password"]:focus {
+            outline: none;
+            border-color: #4d869c;
         }
 
         .registration-container input[type="submit"] {
             width: 100%;
-            padding: 12px;
-            background-color: #007bff;
+            padding: 16px;
+            background-color: #4d869c;
             color: #ffffff;
             border: none;
             border-radius: 5px;
             cursor: pointer;
-            font-size: 16px;
-            transition: background-color 0.3s ease;
+            font-size: 18px;
+            transition: background-color 0.3s ease, transform 0.2s ease;
         }
 
         .registration-container input[type="submit"]:hover {
             background-color: #0056b3;
+            transform: translateY(-2px);
+        }
+
+        .registration-container input[type="submit"]:active {
+            transform: translateY(1px);
+        }
+
+        .login-button {
+            width: 80%;
+            padding: 16px;
+            background-color: #4d869c; /* Dark teal */
+            color: #ffffff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 18px;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            margin-top: 10px; /* Adjust as needed */
+        }
+
+        .login-button:hover {
+            background-color: #4d869c; /* Darker teal on hover */
+            transform: translateY(-2px);
+        }
+
+        .login-button:active {
+            transform: translateY(1px);
         }
     </style>
 </head>
 <body>
     <div class="registration-container">
-        <h2>User Registration</h2>
-        <form action="/register" method="POST">
+        <h2>LLaMaChat Registration</h2>
+        <form id="registrationForm">
             <label for="username">Username:</label>
             <input type="text" id="username" name="username" required>
             <label for="password">Password:</label>
             <input type="password" id="password" name="password" required>
             <input type="submit" value="Register">
         </form>
+        
+        <!-- Login Button -->
+        <button class="login-button" onclick="redirectToLogin()">Login</button>
     </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/js/all.min.js"></script>
+    <script>
+        // Function to redirect to login page
+        function redirectToLogin() {
+            window.location.href = '/login'; // Replace with actual login page URL
+        }
+
+        // Handle form submission via AJAX
+        document.getElementById('registrationForm').addEventListener('submit', async function(event) {
+            event.preventDefault();
+            const formData = new FormData(this);
+            const response = await fetch('/register', {
+                method: 'POST',
+                body: formData
+            });
+            const result = await response.json();
+            if (result.success) {
+                alert(result.message);
+                redirectToLogin(); // Redirect after successful registration
+            } else {
+                alert(result.message);
+            }
+        });
+    </script>
 </body>
 </html>

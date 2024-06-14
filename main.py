@@ -1,7 +1,7 @@
 from transformers import AutoTokenizer, AutoModelForCausalLM
 import torch
 import pymysql.cursors
-from flask import Flask, render_template, jsonify, request, redirect, url_for, session
+from flask import Flask, render_template, jsonify, request, redirect, url_for, session, flash
 from werkzeug.security import check_password_hash, generate_password_hash
 
 app = Flask(__name__)
@@ -208,6 +208,16 @@ def check_user(username, password):
         connection.close()
     return False
 
+def username_exists(username):
+    connection = pymysql.connect(**db_config)
+    try:
+        with connection.cursor() as cursor:
+            sql = "SELECT * FROM users WHERE username = %s"
+            cursor.execute(sql, (username,))
+            return cursor.fetchone() is not None
+    finally:
+        connection.close()
+
 def save_to_database(username, role, message):
     user_id = get_user_id(username)
     if user_id is None:
@@ -249,6 +259,20 @@ def login():
 
     return render_template('login.html')
 
+# @app.route('/register', methods=['GET', 'POST'])
+# def register():
+#     if request.method == 'POST':
+#         username = request.form['username']
+#         password = request.form['password']
+
+#         if username_exists(username):
+#             return jsonify({'success': False, 'message': 'Username already exists. Please choose a different username.'}), 400
+
+#         save_user_to_database(username, password)
+#         return redirect(url_for('login'))
+
+#     return render_template('register.html')
+
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     if request.method == 'POST':
@@ -256,11 +280,20 @@ def register():
         password = request.form['password']
 
         # Add validation if necessary
+        # Validate username and password
+        if not username or not password:
+            return jsonify({'success': False, 'message': 'Username and password are required.'}), 400
+
+        # Check if username already exists
+        if username_exists(username):
+            return jsonify({'success': False, 'message': 'Username already exists. Please choose a different username.'}), 400
 
         save_user_to_database(username, password)
-        return redirect(url_for('login'))
+        flash('Registration successful! Please log in.', 'success')
+        return jsonify({'success': True, 'message': 'Registration successful! Redirecting to login...'}), 200
 
     return render_template('register.html')
+
 
 @app.route('/logout', methods=['POST'])
 def logout():

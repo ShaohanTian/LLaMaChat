@@ -10,55 +10,55 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             margin: 0;
             padding: 0;
-            background-color: #e0e0e0; /* Light grey background */
+            background-color: #f1f8e8; /* Light green background */
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
+            font-size: 18px; /* Increased font size for all text */
+            color: #333; /* Main text color */
         }
-
+    
         /* Chat container styles */
         .chat-container {
             width: 100%;
             max-width: 800px;
             margin: 20px;
-            background-color: #ffffff; /* White background */
+            background-color: #eef7ff; /* Pale blue background */
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             border-radius: 12px;
             overflow: hidden;
             position: relative;
         }
-
+    
         /* Chat header styles */
         .chat-header {
-            background-color: #4A90E2; /* Blue */
+            background-color: #7ab2b2; /* Light teal */
             color: #ffffff;
-            padding: 15px;
+            padding: 12px; /* Reduced padding */
             text-align: center;
             border-top-left-radius: 12px;
             border-top-right-radius: 12px;
-            font-size: 1.5rem;
+            font-size: 1.2rem; /* Reduced font size */
             font-weight: bold;
             letter-spacing: 1px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
-
+    
         /* Chat body styles */
         .chat-body {
             overflow-y: auto;
             max-height: 60vh; /* Limit chat height to maintain visible input area */
             padding: 15px;
-            background-color: #f0f0f0; /* Light grey */
+            background-color: #cde8e5; /* Pale green */
             border-bottom-left-radius: 12px;
             border-bottom-right-radius: 12px;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             font-size: 16px;
             line-height: 1.6;
         }
-
+    
         /* Message styles */
         .message {
             margin-bottom: 15px;
@@ -68,19 +68,19 @@
             position: relative;
             overflow-wrap: break-word;
         }
-
+    
         .user-message {
-            background-color: #d1e7fd; /* Light blue */
-            color: #495057;
+            background-color: #d8efd3; /* Light green */
+            color: #333; /* Darker text color */
             align-self: flex-start;
         }
-
+    
         .llama-message {
-            background-color: #4A90E2; /* Blue */
+            background-color: #4d869c; /* Teal */
             color: #ffffff;
             align-self: flex-end;
         }
-
+    
         /* Timeline styles */
         .timeline {
             position: absolute;
@@ -89,7 +89,7 @@
             bottom: 8px;
             right: 12px;
         }
-
+    
         /* Input area styles */
         .input-area {
             display: flex;
@@ -99,9 +99,8 @@
             background-color: #ffffff;
             border-bottom-left-radius: 12px;
             border-bottom-right-radius: 12px;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
-
+    
         .input-field {
             flex: 1;
             padding: 10px;
@@ -109,80 +108,91 @@
             border: 1px solid #ddd;
             border-radius: 6px;
             outline: none;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
-
-        .send-button,
+    
+        .send-button {
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #55ad9b; /* Dark teal */
+            color: #ffffff;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            outline: none;
+        }
+    
+        .send-button:hover {
+            background-color: #4d869c; /* Darker teal */
+        }
+    
         .logout-button,
         .copy-button,
         .clear-button {
-            padding: 10px 20px;
-            font-size: 16px;
+            padding: 8px 12px; /* Adjusted smaller padding */
+            font-size: 14px; /* Adjusted smaller font size */
             border: none;
             border-radius: 6px;
             cursor: pointer;
             outline: none;
-            transition: background-color 0.3s ease;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
-
-        .send-button {
-            background-color: #007bff; /* Blue */
-            color: #ffffff;
-        }
-
-        .send-button:hover {
-            background-color: #0056b3; /* Darker blue */
-        }
-
+    
         .logout-button {
             background-color: #dc3545; /* Red */
             color: #ffffff;
             margin-left: 10px;
+            transition: background-color 0.3s ease;
         }
-
+    
         .logout-button:hover {
-            background-color: #c82333; /* Darker red */
+            background-color: #c82333; /* Darker Red */
         }
-
+    
         .copy-button {
-            background-color: #28a745; /* Green */
+            background-color: #17a2b8; /* Cyan */
             color: #ffffff;
             margin-left: 10px;
+            transition: background-color 0.3s ease;
         }
-
+    
         .copy-button:hover {
-            background-color: #218838; /* Darker green */
+            background-color: #138496; /* Darker Cyan */
         }
-
+    
         .clear-button {
             background-color: #ffc107; /* Yellow */
             color: #ffffff;
             margin-left: 10px;
+            transition: background-color 0.3s ease;
         }
-
+    
         .clear-button:hover {
-            background-color: #e0a800; /* Darker yellow */
+            background-color: #e0a800; /* Darker Yellow */
         }
-
+    
         /* Scrollbar styles */
         .chat-body::-webkit-scrollbar {
             width: 8px;
         }
-
+    
         .chat-body::-webkit-scrollbar-track {
             background: #f1f1f1;
         }
-
+    
         .chat-body::-webkit-scrollbar-thumb {
             background: #888;
             border-radius: 4px;
         }
-
+    
         .chat-body::-webkit-scrollbar-thumb:hover {
             background: #555;
         }
     </style>
+    
+
+    
+    
+
 </head>
 <body>
     <div class="chat-container">
